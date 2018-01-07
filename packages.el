@@ -85,34 +85,32 @@
       "aws" 'w3m-search
       )
     (progn
-        (evilified-state-evilify-map w3m-mode-map
-          :mode w3m-mode
-          :eval-after-load w3m
-          :bindings
+        (evilified-state-evilify w3m-mode w3m-mode-map
+          "y" 'evil-yank
+          "d" 'evil-delete
           "0" 'evil-digit-argument-or-evil-beginning-of-line
           "$" 'evil-end-of-line
           "f" 'evil-find-char
           "F" 'evil-find-char-backward
-          "o" 'ace-link-eww
-          "wp" 'v/w3m-player-movie
-          "wy" 'v/w3m-copy-link
-          "wf" 'w3m-find-file
-          "wo" 'v/w3m-open-url
-          "wO" 'v/w3m-open-url-new-session
-          "wt" 'w3m-view-this-url-new-session
-          "wT" 'w3m-create-empty-session
-          "ws" 'w3m-search
-          "wS" 'w3m-search-new-session
-          "wl" 'w3m-next-buffer
-          "wh" 'w3m-previous-buffer
-          "wx" 'w3m-delete-buffer
-          "wd" 'v/w3m-save-buffer-to-file
-          "wD" 'w3m-save-buffer
-          "we" 'w3m-bookmark-edit
-          "wa" 'w3m-bookmark-add-current-url
-          "wm" 'w3m-view-url-with-external-browser
-          "wb" 'helm-w3m-bookmarks
-          "wB" 'w3m-bookmark-view
+          ",p" 'v/w3m-player-movie
+          ",y" 'v/w3m-copy-link
+          ",f" 'w3m-find-file
+          ",o" 'v/w3m-open-url
+          ",O" 'v/w3m-open-url-new-session
+          ",t" 'w3m-view-this-url-new-session
+          ",T" 'w3m-create-empty-session
+          ",s" 'w3m-search
+          ",S" 'w3m-search-new-session
+          ",l" 'w3m-next-buffer
+          ",h" 'w3m-previous-buffer
+          ",d" 'w3m-delete-buffer
+          ",W" 'v/w3m-save-buffer-to-file
+          ",w" 'w3m-save-buffer
+          ",e" 'w3m-bookmark-edit
+          ",a" 'w3m-bookmark-add-current-url
+          ",m" 'w3m-view-url-with-external-browser
+          ",b" 'helm-w3m-bookmarks
+          ",B" 'w3m-bookmark-view
         ))))
 
 (with-eval-after-load 'w3m
