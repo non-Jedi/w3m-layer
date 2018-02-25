@@ -17,31 +17,20 @@
         helm-w3m
         ))
 
-(defun v/w3m-save-buffer-to-file ()
+(defun spacemacs/w3m-mpv-current-url ()
   (interactive)
-  (let* ((curr (buffer-file-name))
-         (new (read-file-name
-               "Save to file: " nil nil nil
-               (and curr (file-name-nondirectory curr))))
-         (mustbenew (if (and curr (file-equal-p new curr)) 'excl t)))
-    (if (use-region-p)
-        (write-region (region-beginning) (region-end) new nil nil nil mustbenew)
-      (save-restriction
-        (widen)
-        (write-region (point-min) (point-max) new nil nil nil mustbenew)))))
+    (if (not w3m-current-url)
+        (message "No current url.")
+      (call-process "mpv" nil nil nil w3m-current-url)
+      (message "Sorry, Playback error. Please check url.")))
 
-(defun v/w3m-player-movie ()
+(defun spacemacs/w3m-mpv-this-url ()
   (interactive)
   (let ((link (w3m-anchor)))
     (if (not link)
-        (message "The point is not link.")
-   (cond ((string-match "/\\/www\\.youtube\\.com\\/watch\/?" link)
-          (message (concat "loading from youtube..." link))
-          (call-process "mpv" nil nil nil link))
-         ((string-match "/\\/www\\.bilibili\\.com\\/video\/" link)
-            (message (concat "loading from bilibili..." link))
-            (call-process "bilidan" nil nil nil link)))
-   (message "Sorry, Playback error. please check url."))))
+        (message "This point is not a link.")
+      (call-process "mpv" nil nil nil link)
+      (message "Sorry, Playback error. Please check url."))))
 
 (defun v/w3m-copy-link ()
   (interactive)
@@ -60,30 +49,11 @@
       (spacemacs/set-leader-keys
         "awb" 'helm-w3m-bookmarks))))
 
-(defun v/w3m-open-url (url)
-  "Opens url in new w3m session with 'http://' appended"
-  (interactive
-   (list (read-string "Enter website address (default: google.com):" nil nil "google.com" nil )))
-  (w3m-goto-url
-   (concat "http://" url)))
-
-(defun v/w3m-open-url-new-session (url)
-  "Opens url in new w3m session with 'http://' appended"
-  (interactive
-   (list (read-string "Enter website address (default: google.com):" nil nil "google.com" nil )))
-  (w3m-goto-url-new-session
-   (concat "http://" url)))
-
 (defun w3m/init-w3m()
   "Initializes w3m and adds keybindings for its exposed functionalities."
   (use-package w3m
     :defer t
     :init
-    (spacemacs/set-leader-keys
-      "awo" 'v/w3m-open-url
-      "awf" 'w3m-find-file
-      "aws" 'w3m-search
-      )
     (progn
         (evilified-state-evilify w3m-mode w3m-mode-map
           "y" 'evil-yank
@@ -92,26 +62,41 @@
           "$" 'evil-end-of-line
           "f" 'evil-find-char
           "F" 'evil-find-char-backward
-          ",p" 'v/w3m-player-movie
-          ",y" 'v/w3m-copy-link
-          ",f" 'w3m-find-file
-          ",o" 'v/w3m-open-url
-          ",O" 'v/w3m-open-url-new-session
-          ",t" 'w3m-view-this-url-new-session
-          ",T" 'w3m-create-empty-session
-          ",s" 'w3m-search
-          ",S" 'w3m-search-new-session
-          ",l" 'w3m-next-buffer
-          ",h" 'w3m-previous-buffer
-          ",d" 'w3m-delete-buffer
-          ",W" 'v/w3m-save-buffer-to-file
-          ",w" 'w3m-save-buffer
-          ",e" 'w3m-bookmark-edit
-          ",a" 'w3m-bookmark-add-current-url
-          ",m" 'w3m-view-url-with-external-browser
-          ",b" 'helm-w3m-bookmarks
-          ",B" 'w3m-bookmark-view
-        ))))
+          )
+        (spacemacs/declare-prefix-for-mode 'w3m-mode "mo" "open")
+        (spacemacs/declare-prefix-for-mode 'w3m-mode "moe" "external")
+        (spacemacs/declare-prefix-for-mode 'w3m-mode "moet" "this url")
+        (spacemacs/declare-prefix-for-mode 'w3m-mode "ms" "search")
+        (spacemacs/declare-prefix-for-mode 'w3m-mode "mb" "buffer")
+        (spacemacs/declare-prefix-for-mode 'w3m-mode "mm" "mark")
+        (spacemacs/set-leader-keys-for-major-mode 'w3m-mode
+          ;; general-purpose opening stuff
+          "oo" 'w3m-goto-url
+          "oO" 'w3m-goto-url-new-session
+          "of" 'w3m-find-file
+          "ot" 'w3m-view-this-url
+          "oT" 'w3m-view-this-url-new-session
+          ;; opening externally
+          "oeo" 'w3m-external-view-current-url
+          "oeto" 'w3m-external-view-this-url
+          "oev" 'spacemacs/w3m-mpv-current-url
+          "oetv" 'spacemacs/w3m-mpv-this-url
+          ;; searching
+          "ss" 'w3m-search
+          "sS" 'w3m-search-new-session
+          ;; navigating buffers
+          "bj" 'w3m-next-buffer
+          "bk" 'w3m-previous-buffer
+          "bd" 'w3m-delete-buffer
+          "bw" 'w3m-save-buffer
+          ;; working with bookmarks
+          "me" 'w3m-bookmark-edit
+          "ma" 'w3m-bookmark-add-current-url
+          "mm" 'helm-w3m-bookmarks
+          "mM" 'w3m-bookmark-view
+          ;; other stuff
+          "y" 'v/w3m-copy-link
+          ))))
 
 (with-eval-after-load 'w3m
   (define-key w3m-mode-map (kbd "C-f") 'evil-scroll-page-down)
