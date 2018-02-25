@@ -1,9 +1,9 @@
 ;;; packages.el --- w3m layer packages file for Spacemacs.
 ;;
-;; Copyright (c) 2012-2017 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2017 Kuroi Mato and Adam Beckmeyer
 ;;
-;; Author: Kuroi Mato <venmos@fuck.gfw.es>
-;; URL: https://github.com/syl20bnr/spacemacs
+;; Author: Kuroi Mato <venmos@fuck.gfw.es>, Adam Beckmeyer
+;; URL: https://github.com/non-Jedi/w3m-layer
 ;;
 ;; This file is not part of GNU Emacs.
 ;;
